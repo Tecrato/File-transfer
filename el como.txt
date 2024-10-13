@@ -1,0 +1,20 @@
+creo el socket
+la otra persona se debe conectar
+
+los 2 se ponen a enviarse constantemente señales de que sigue la conexion activa
+send("waiting")
+
+en un momento dado uno de los dos envia una señal de que se esta preparando para enviar un archivo
+send("preparing")
+
+el otro recibe la señal y se pone a esperar a que se reciba los detalles del archivo
+send({nombre del archivo, tamaño del archivo})
+
+al recibir la señal de preparación se pone a esperar a que se reciba el contenido del archivo
+recibe el contenido del archivo
+
+envia la señal de "waiting" denuevo
+
+y se repite el proceso
+
+flet build apk -v --description "File transfer" --company Edouard --org com.Edouard
