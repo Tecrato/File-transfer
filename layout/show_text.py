@@ -8,7 +8,7 @@ class text1(ft.Row):
         self.text1 = ft.Text(text1)
         self.text2 = ft.Text(text2)
 
-        super().__init__([self.text1, self.text2], expand=True, alignment=ft.MainAxisAlignment.START,**kwargs)
+        super().__init__([ft.Column([self.text1, self.text2])], expand=True, alignment=ft.MainAxisAlignment.START,**kwargs)
 
 class Button1(ft.ElevatedButton):
     def __init__(self, text: str, on_click: Callable[[ft.ControlEvent], None] = None, elevation: int = 10, **kwargs):
