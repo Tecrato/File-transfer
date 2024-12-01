@@ -1,0 +1,22 @@
+[project]
+name = "File Transfer"
+version = "1.0.0"
+description = "Una aplicación de Flet para transferir archivos entre dos dispositivos"
+authors = [
+  {name = "Edouard Sandoval", email = "pinchos792003@gmail.com"},
+]
+dependencies = ["flet"]
+
+[tool.flet]
+org = "com.Edouard"
+product = "File Transfer"
+company = "Edouard Sandoval"
+copyright = "Copyright (C) 2024 by Edouard Sandoval"
+build_number = 1
+
+permissions = ["storage"]
+
+
+[tool.flet.android.permission]
+"android.permission.READ_EXTERNAL_STORAGE" = true
+"android.permission.WRITE_EXTERNAL_STORAGE" = true
