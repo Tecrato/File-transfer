@@ -43,8 +43,8 @@ class App:
         self.page.title = "File Transfer"
         self.page.window.width = 400
         self.page.window.icon = "./assets/icon.png"
-        self.page.window.min_height = 600
-        self.page.window.min_width = 400
+        self.page.window.min_height = 630
+        self.page.window.min_width = 430
         self.page.window.prevent_close = True
         self.page.window.on_event = self.window_event
         # self.page.window.wait_until_ready_to_show = True
@@ -76,7 +76,7 @@ class App:
 
         # Controles
 
-        self.title = ft.Text("File Transfer",size=30,text_align=ft.TextAlign.CENTER)
+        self.title = ft.Text("File Transfer")
 
         self.Alert = ft.AlertDialog(title=ft.Text("Bienvenido"))
         self.Alert.actions.append(ft.TextButton("OK", on_click=self.cerrar_alert))
@@ -88,80 +88,83 @@ class App:
         self.file_picker = ft.FilePicker(on_result=self.on_path_picked)
         self.page.add(self.file_picker)
 
-        self.my_ip_text = text1("Dirección IP: ", self.ip_me)
+        self.my_ip_text = text1("Dirección IP: ", self.ip_me, wrap=True)
 
-        self.send_text_ip = text1("Dirección IP: ", self.page.client_storage.get("send_IP"))
+        self.send_text_ip = text1("Dirección IP: ", self.page.client_storage.get("send_IP"), wrap=True)
         self.send_input_ip = ft.TextField(self.page.client_storage.get("send_IP"), hint_text="Dirección IP", label="Dirección IP", visible=False)
         self.send_text_port = text1("Puerto: ", self.page.client_storage.get("send_port"))
         self.send_input_port = ft.TextField(self.page.client_storage.get("send_port"), hint_text="Puerto", label="Puerto", visible=False)
         self.send_button = Button1("Cambiar IP",on_click=self.cambiar_ip_send)
 
-        self.sending_file_name = text1("Archivo: ", self.page.client_storage.get("file_path").replace("\\","/").split("/")[-1], height=50)
+        self.sending_file_name = text1("Archivo: ", self.page.client_storage.get("file_path").replace("\\","/").split("/")[-1], height=30)
+        self.sending_file_size = text1("Peso: ", format_size_bits_to_bytes(Path(self.page.client_storage.get("file_path")).stat().st_size), height=30)
         self.sending_button_change_file = Button1("Cambiar Archivo",lambda event: self.file_picker.pick_files("Seleccione un archivo"))
         self.sending_progress_bar = ft.ProgressBar(color="green", bgcolor="aaa", value=0, height=10, expand=True)
         self.sending_button = Button1("Enviar",on_click=self.init_sending)
 
         self.page.add(
-            ft.AppBar(title=self.title,elevation=0, center_title=True,actions=[ft.IconButton(icon=ft.Icons.INFO, on_click=self.info)]),
+            ft.AppBar(title=self.title, center_title=True,actions=[ft.IconButton(icon=ft.Icons.INFO, on_click=self.info)]),
         )
 
-        self.page.add(ft.SafeArea(ft.Column([
+
+        self.columna_principal = ft.Column([
             ft.Column([
                 ft.Row([
                     Button1("conectar",width=120,height=120,elevation=10,on_click=self.conectar),
                     Button1("Crear conexion",width=120,height=120,elevation=10,on_click=self.crear_conexion),
-                ],expand=True,alignment=ft.MainAxisAlignment.SPACE_AROUND),
+                ],alignment=ft.MainAxisAlignment.SPACE_AROUND),
                 ft.Row([
                     Button1("Desconectar",elevation=10,on_click=self.desconectar),
-                ],expand=True,alignment=ft.MainAxisAlignment.SPACE_AROUND),
+                ],alignment=ft.MainAxisAlignment.CENTER),
             ]),
             ft.Divider(),
             ft.Row([
-                ft.Text("Enviar archivo", size=30,expand=True,text_align=ft.TextAlign.CENTER),
-            ]),
+                ft.Text("Enviar archivo", size=24),
+            ], alignment='center'),
             ft.Row([
                 ft.Column([
                     self.sending_file_name,
+                    self.sending_file_size,
                     ft.Row([
                         self.sending_button_change_file,
                         self.sending_button,
-                    ],expand=True,alignment=ft.MainAxisAlignment.SPACE_AROUND),
+                    ],alignment=ft.MainAxisAlignment.SPACE_AROUND,height=40),
                     ft.Row([
                         self.sending_progress_bar
-                    ],expand=True,alignment=ft.MainAxisAlignment.CENTER, height=30),
-                ], expand=True, alignment=ft.MainAxisAlignment.SPACE_AROUND),
-            ], expand=True),
+                    ],alignment=ft.MainAxisAlignment.CENTER, height=30),
+                ], alignment=ft.MainAxisAlignment.SPACE_AROUND, expand=True),
+            ]),
             ft.Divider(),
             ft.Row([
-                ft.Text("Configuración", size=30,expand=True,text_align=ft.TextAlign.CENTER),
-            ], spacing=10),
+                ft.Text("Configuración", size=24,text_align=ft.TextAlign.CENTER),
+            ], spacing=5, alignment='center'),
             ft.Row([
                 ft.Column([
                     ft.Row([
-                        ft.Text("Tu Direccion",text_align=ft.TextAlign.CENTER, expand=True),
+                        ft.Text("Tu Direccion",text_align=ft.TextAlign.CENTER,),
                     ],alignment=ft.MainAxisAlignment.START),
                         
                     self.my_ip_text,
                     text1("Puerto: ", self.port_me),
-                ], spacing=15, expand=True),
-                ft.VerticalDivider(),
+                ], spacing=15,expand=True),
+                ft.VerticalDivider(3),
                 ft.Column([
                     ft.Row([
-                        ft.Text("otra Direccion",text_align=ft.TextAlign.CENTER, expand=True),
+                        ft.Text("Otra Direccion",text_align=ft.TextAlign.CENTER,),
                     ],alignment=ft.MainAxisAlignment.START),
                     self.send_text_ip,
                     self.send_input_ip,
                     self.send_text_port,
                     self.send_input_port,
-                ], spacing=15, expand=True),
-            ], expand=True),
+                ], spacing=15,expand=True),
+            ], alignment='spaceEvenly'),
             ft.Row([
                 ft.ElevatedButton("Cambiar Carpeta guardado",on_click=lambda e: self.file_picker.get_directory_path()),
                 self.send_button
-            ],alignment=ft.MainAxisAlignment.CENTER),
-        ], alignment=ft.MainAxisAlignment.SPACE_AROUND, scroll=False, expand=True),expand=True))
+            ],alignment=ft.MainAxisAlignment.SPACE_AROUND),
+        ], horizontal_alignment='center', alignment=ft.MainAxisAlignment.SPACE_AROUND, expand=True, spacing=5)
         
-
+        self.page.add(self.columna_principal)
         self.page.update()
         self.page.run_task(self.actualizar_bar_progreso)
         self.page.run_task(self.actualizar_ip_me)
@@ -230,17 +233,20 @@ class App:
         self.send_input_port.visible = True
         self.send_button.text = "Confirmar"
         self.send_button.on_click = self.confirmar_cambio_ip_send
+        self.columna_principal.scroll = ft.ScrollMode.AUTO
         self.page.update()
 
     def confirmar_cambio_ip_send(self,event):
         if not re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", self.send_input_ip.value):
             self.Alert.title.value = "Dirección IP no válida"
             self.Alert.open = True
+            self.columna_principal.scroll = False
             self.page.update()
             return
         if not re.match(r"^\d{1,5}$", str(self.send_input_port.value)):
             self.Alert.title.value = "Puerto no válido"
             self.Alert.open = True
+            self.columna_principal.scroll = False
             self.page.update()
             return
 
@@ -258,6 +264,7 @@ class App:
         self.send_text_port.visible = True
         self.send_button.text = "Cambiar"
         self.send_button.on_click = self.cambiar_ip_send
+        self.columna_principal.scroll = False
         self.page.update()
 
     def on_path_picked(self, result: ft.FilePickerResultEvent):
@@ -266,6 +273,7 @@ class App:
         if result.files:
             self.page.client_storage.set("file_path", result.files[0].path)
             self.sending_file_name.text2.value = result.files[0].name
+            self.sending_file_size.text2.value = format_size_bits_to_bytes(result.files[0].size)
         self.page.update()
 
     def desconectar(self, event):
@@ -556,7 +564,6 @@ class App:
     
     def del_alert_content(self,e):
         self.Alert.content = None
-        self.page.update()
     def cerrar_alert(self,e):
         self.Alert.open = False
         self.page.update()
@@ -578,4 +585,5 @@ Creado por Edouard Sandoval")
         self.Alert.on_dismiss = self.del_alert_content
         self.page.update()
 
-ft.app(App, "File Transfer")
+if __name__=="__main__":
+    ft.app(App, "File Transfer")
