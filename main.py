@@ -53,7 +53,7 @@ class App:
         
         # Variables
         self.other_device: socket.socket = None
-        self.conexion_thread = Thread(target=self.__crear_conexion,daemon=True)
+        self.conexion_thread = None
         self.reciving_file = False
         self.reciving_file_path_file = None
         self.send_signal = False
@@ -72,7 +72,7 @@ class App:
         self.ip_me = "127.0.0.1"
         self.port_me = 1500
         
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket = None
 
         # Controles
 
@@ -96,8 +96,12 @@ class App:
         self.send_input_port = ft.TextField(self.page.client_storage.get("send_port"), hint_text="Puerto", label="Puerto", visible=False)
         self.send_button = Button1("Cambiar IP",on_click=self.cambiar_ip_send)
 
-        self.sending_file_name = text1("Archivo: ", self.page.client_storage.get("file_path").replace("\\","/").split("/")[-1], height=30)
-        self.sending_file_size = text1("Peso: ", format_size_bits_to_bytes(Path(self.page.client_storage.get("file_path")).stat().st_size), height=30)
+        try:
+            self.sending_file_name = text1("Archivo: ", self.page.client_storage.get("file_path").replace("\\","/").split("/")[-1], height=30)
+            self.sending_file_size = text1("Peso: ", format_size_bits_to_bytes(Path(self.page.client_storage.get("file_path")).stat().st_size), height=30)
+        except:
+            self.sending_file_name = text1("Archivo: ", "Sin archivo", height=30)
+            self.sending_file_size = text1("Peso: ", "Sin archivo", height=30)
         self.sending_button_change_file = Button1("Cambiar Archivo",lambda event: self.file_picker.pick_files("Seleccione un archivo"))
         self.sending_progress_bar = ft.ProgressBar(color="green", bgcolor="aaa", value=0, height=10, expand=True)
         self.sending_button = Button1("Enviar",on_click=self.init_sending)
@@ -512,7 +516,7 @@ class App:
                 with open(self.page.client_storage.get('file_path'), "rb") as f:
                     while True:
                         f.seek(progreso)
-                        data = f.read(1024)
+                        data = f.read(1024*8)
                         if not data:
                             break
                         self.er_socket.send(data)
@@ -585,5 +589,5 @@ Creado por Edouard Sandoval")
         self.Alert.on_dismiss = self.del_alert_content
         self.page.update()
 
-if __name__=="__main__":
-    ft.app(App, "File Transfer")
+# if __name__=="__main__":
+ft.app(App, "File Transfer")
