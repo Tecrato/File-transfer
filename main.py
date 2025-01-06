@@ -42,7 +42,7 @@ class App:
         self.page = page
         self.page.title = "File Transfer"
         self.page.window.width = 400
-        self.page.window.icon = "./assets/icon.png"
+        self.page.window.icon = "./assets/icon.ico"
         self.page.window.min_height = 630
         self.page.window.min_width = 430
         self.page.window.prevent_close = True
@@ -590,4 +590,4 @@ Creado por Edouard Sandoval")
         self.page.update()
 
 # if __name__=="__main__":
-ft.app(App, "File Transfer")
+ft.app(App, "File Transfer", assets_dir="assets")
