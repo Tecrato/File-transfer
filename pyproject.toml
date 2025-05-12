@@ -5,7 +5,9 @@ description = "Una aplicación de Flet para transferir archivos entre dos dispos
 authors = [
   {name = "Edouard Sandoval", email = "pinchos792003@gmail.com"},
 ]
-dependencies = ["flet"]
+dependencies = [
+  "flet"
+]
 
 [tool.flet]
 org = "com.Edouard"
